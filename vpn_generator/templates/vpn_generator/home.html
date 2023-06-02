@@ -3,24 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
-<body>
+<body style="background-color:lightblue">
 
-    <form id="userform" method="post">
-            {% csrf_token %}
+    <main style="">
+        <h1 class="display-1 mb-3">Everybody needs access to FreeInternet</h1>
+        <p class="ms-5">Enter you email to get free config file.<br>
+            each email gets 1 free vpn.</p>
+        <form id="userform" method="post">
+                {% csrf_token %}
 
-        <label for="email">Your email:</label>
-        <input id="email" name="email" type="email" required/>
-        <input type="submit" value="submit">
+            <div class="mb-3 mt-3 ms-3 w-25">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+                <input class="btn btn-dark mt-3 "  type="submit" value="submit">
 
-    </form>
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+            </div>
+
+        </form>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </main>
 
 </body>
 </html>
