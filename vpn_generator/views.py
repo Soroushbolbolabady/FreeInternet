@@ -1,30 +1,44 @@
+from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import render , HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect
 from .forms import UserForm
 from .models import User
 import uuid
 from django.core.mail import EmailMessage
+from .replacer import replace_new_uuid
+import requests
+
 # Create your views here.
 
-
 def home(request):
-
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
             if User.objects.filter(email=email).exists():
-                messages.warning(request , "This email already exists! try another email!")
+                messages.warning(request, "This email already exists! try another email!")
             else:
+                # generate a uuid and add it to database
                 obj = form.save(commit=False)
                 custom_uuid = str(uuid.uuid4())
                 obj.uuid = custom_uuid
                 obj.save()
+
+                # replace new uuid in client config file
+                replace_new_uuid(custom_uuid)
+
+
+
+                # Send config to client
+                mail = EmailMessage("FreeInternet For everyone", "You can use this file and import it to any "
+                                                                 "v2rayapp ", settings.EMAIL_HOST_USER, [email])
+                mail.attach_file("files/config.json")
+                mail.send()
                 return HttpResponseRedirect('')
     else:
         form = UserForm()
     context = {
-        'form':form
+        'form': form
     }
 
-    return render(request , 'vpn_generator/home.html' , context)
+    return render(request, 'vpn_generator/home.html', context)
