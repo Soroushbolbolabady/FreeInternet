@@ -7,8 +7,8 @@ import uuid
 from django.core.mail import EmailMessage
 from .replacer import replace_new_uuid
 import requests
+from .credentials import IP_DESTINATION
 
-# Create your views here.
 
 def home(request):
     if request.method == "POST":
@@ -25,10 +25,10 @@ def home(request):
                 obj.save()
 
                 # replace new uuid in client config file
-                replace_new_uuid(custom_uuid)
+                replace_new_uuid(obj.uuid)
 
-
-
+                re = requests.get((IP_DESTINATION + obj.uuid))
+                print(re.status_code)
                 # Send config to client
                 mail = EmailMessage("FreeInternet For everyone", "You can use this file and import it to any "
                                                                  "v2rayapp ", settings.EMAIL_HOST_USER, [email])
