@@ -28,13 +28,15 @@ def home(request):
                 replace_new_uuid(obj.uuid)
 
                 re = requests.get((IP_DESTINATION + obj.uuid))
-                print(re.status_code)
-                # Send config to client
-                mail = EmailMessage("FreeInternet For everyone", "You can use this file and import it to any "
-                                                                 "v2rayapp ", settings.EMAIL_HOST_USER, [email])
-                mail.attach_file("files/config.json")
-                mail.send()
-                return HttpResponseRedirect('')
+                if re.status_code == 200:
+                    # Send config to client
+                    mail = EmailMessage("FreeInternet For everyone", "You can use this file and import it to any "
+                                                                     "v2rayapp ", settings.EMAIL_HOST_USER, [email])
+                    mail.attach_file("files/config.json")
+                    mail.send()
+                    return HttpResponseRedirect('successful')
+                else:
+                    return HttpResponseRedirect('unsuccessful')
     else:
         form = UserForm()
     context = {
@@ -42,3 +44,11 @@ def home(request):
     }
 
     return render(request, 'vpn_generator/home.html', context)
+
+
+def successful(request):
+    return render(request, 'vpn_generator/successful.html')
+
+
+def unsuccessful(request):
+    return render(request, 'vpn_generator/unsuccessful.html')
