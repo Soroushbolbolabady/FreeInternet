@@ -26,6 +26,7 @@ def home(request):
 
                 # replace new uuid in client config file
                 replace_new_uuid(obj.uuid)
+                # here need some authentication i will write it
 
                 re = requests.get((IP_DESTINATION + obj.uuid))
                 if re.status_code == 200:
